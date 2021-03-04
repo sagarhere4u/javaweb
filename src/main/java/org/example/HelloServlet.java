@@ -20,8 +20,6 @@ public class HelloServlet extends HttpServlet {
         
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-                response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
         out.print("<html>");
         out.print("<head>");
         out.print("<title>Sample Java Application");
