@@ -1,0 +1,76 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: javaweb-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: javaweb-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      type: local
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javaweb-deployment
+  labels:
+    app: javaweb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: javaweb
+  template:
+    metadata:
+      labels:
+        app: javaweb
+    spec:
+      volumes:
+      - name: javaweb-pv-volume
+        persistentVolumeClaim:
+          claimName: javaweb-pv-claim
+      containers:
+      - name: javaweb
+        image: smehta26/mytomcat:6.0.44
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: "/home/tom/webapps"
+          name: javaweb-pv-volume
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javaweb-service
+  labels:
+    app: javaweb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    nodePort: 30000
+  selector:
+    app: javaweb
