@@ -1,4 +1,4 @@
-// Reflecting the directory structure where the file lives1
+// Reflecting the directory structure where the file lives
 package org.example;
 
 import javax.servlet.http.HttpServlet;
